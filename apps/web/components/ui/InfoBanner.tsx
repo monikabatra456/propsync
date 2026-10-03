@@ -1,10 +1,11 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Info, CheckCircle2, AlertTriangle, ShieldCheck } from "lucide-react";
+import { Info, AlertTriangle, ShieldCheck } from "lucide-react";
 
 interface InfoBannerProps {
   title?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  message?: string;
   variant?: "info" | "success" | "warning";
   className?: string;
 }
@@ -12,11 +13,14 @@ interface InfoBannerProps {
 export function InfoBanner({
   title,
   children,
+  message,
   variant = "info",
   className,
 }: InfoBannerProps) {
   const isInfo = variant === "info";
   const isSuccess = variant === "success";
+
+  const content = children || message;
 
   return (
     <div
@@ -46,9 +50,11 @@ export function InfoBanner({
             {title}
           </h4>
         )}
-        <div className="text-[13px] leading-relaxed text-ink-700">
-          {children}
-        </div>
+        {content && (
+          <div className="text-[13px] leading-relaxed text-ink-700">
+            {content}
+          </div>
+        )}
       </div>
     </div>
   );

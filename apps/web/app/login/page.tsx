@@ -45,6 +45,10 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("propsync_current_role", selectedRole);
+      localStorage.setItem("propsync_current_email", email);
+    }
     setTimeout(() => {
       setIsLoading(false);
       router.push("/properties");

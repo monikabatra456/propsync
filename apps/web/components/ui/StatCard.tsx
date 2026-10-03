@@ -6,7 +6,8 @@ interface StatCardProps {
   value: string | number;
   icon: React.ElementType;
   delta?: {
-    text: string;
+    text?: string;
+    value?: string;
     isPositive?: boolean;
     prefix?: string;
   };
@@ -27,6 +28,8 @@ export function StatCard({
   progress,
   className,
 }: StatCardProps) {
+  const deltaText = delta?.text || delta?.value;
+
   return (
     <div
       className={cn(
@@ -63,15 +66,15 @@ export function StatCard({
               </span>
             )}
           </div>
-        ) : delta ? (
+        ) : deltaText ? (
           <div className="flex items-center gap-1 text-[12px] font-medium">
             <span
               className={cn(
-                delta.isPositive ? "text-[#1E9E6A]" : "text-ink-500"
+                delta?.isPositive ? "text-[#1E9E6A]" : "text-ink-500"
               )}
             >
-              {delta.prefix || (delta.isPositive ? "↑ " : "")}
-              {delta.text}
+              {delta?.prefix || (delta?.isPositive ? "↑ " : "")}
+              {deltaText}
             </span>
           </div>
         ) : subtext ? (

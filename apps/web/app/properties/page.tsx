@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Building2,
   KeyRound,
@@ -14,94 +15,18 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
-import { PropertyCard, PropertyData } from "@/components/property/PropertyCard";
+import { PropertyCard } from "@/components/property/PropertyCard";
+import { PropertyMapView } from "@/components/property/PropertyMapView";
+import { getStoredProperties, Property } from "@/lib/propertyStore";
+import { exportPropertyPresentation } from "@/lib/pptExport";
 import { cn } from "@/lib/utils";
 
-// Seed sample properties matching M2 mockup exactly
-const SAMPLE_PROPERTIES: PropertyData[] = [
-  {
-    id: "prop-1",
-    title: "Premium Office Space – Sector 62",
-    location: "Sector 62, Noida, Uttar Pradesh",
-    status: "available",
-    areaSqft: 5000,
-    areaSqyd: 464,
-    landUse: "Office",
-    rentPerSqft: 18,
-    description: "Modern office space in a prime business location with excellent connectivity and amenities.",
-    images: [
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  {
-    id: "prop-2",
-    title: "Retail Space – Cyber City",
-    location: "Cyber City, Gurgaon, Haryana",
-    status: "under_verification",
-    areaSqft: 2500,
-    areaSqyd: 232,
-    landUse: "Retail",
-    rentPerSqft: 120,
-    description: "Well-located retail space in a high footfall commercial hub.",
-    images: [
-      "https://images.unsplash.com/photo-1555636222-cae831e670b3?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  {
-    id: "prop-3",
-    title: "Warehouse – Bhiwandi",
-    location: "Bhiwandi, Maharashtra",
-    status: "rented",
-    areaSqft: 10000,
-    areaSqyd: 929,
-    landUse: "Industrial",
-    rentPerSqft: 8,
-    description: "Spacious warehouse with easy access to major transport routes.",
-    images: [
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  {
-    id: "prop-4",
-    title: "Commercial Space – Connaught Place",
-    location: "Connaught Place, New Delhi",
-    status: "available",
-    areaSqft: 3200,
-    areaSqyd: 297,
-    landUse: "Commercial",
-    rentPerSqft: 250,
-    description: "Premium commercial space in the heart of Delhi's business district.",
-    images: [
-      "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  {
-    id: "prop-5",
-    title: "Residential Land – Dwarka Expressway",
-    location: "Sector 112, Gurgaon, Haryana",
-    status: "available",
-    areaSqft: 12000,
-    areaSqyd: 1114,
-    landUse: "Residential",
-    rentPerSqft: 10,
-    description: "Ideal for residential development with great future potential.",
-    images: [
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-];
-
 export default function PropertiesPage() {
+  const router = useRouter();
+  const [properties, setProperties] = useState<Property[]>([]);
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [searchTerm, setSearchTerm] = useState("");
   const [landUseFilter, setLandUseFilter] = useState("All");
@@ -109,13 +34,20 @@ export default function PropertiesPage() {
   const [rentFilter, setRentFilter] = useState("All");
   const [sortBy, setSortBy] = useState("Newest First");
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  useEffect(() => {
+    setProperties(getStoredProperties());
+  }, []);
 
   // Filter properties logic
-  const filteredProperties = SAMPLE_PROPERTIES.filter((item) => {
+  const filteredProperties = properties.filter((item) => {
     if (searchTerm) {
       const matchSearch =
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.location.toLowerCase().includes(searchTerm.toLowerCase());
+        item.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.locality.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.district.toLowerCase().includes(searchTerm.toLowerCase());
       if (!matchSearch) return false;
     }
 
@@ -138,8 +70,29 @@ export default function PropertiesPage() {
     return true;
   });
 
+  // Sort logic
+  const sortedProperties = [...filteredProperties].sort((a, b) => {
+    if (sortBy === "Price: Low to High") return a.rentPerSqft - b.rentPerSqft;
+    if (sortBy === "Price: High to Low") return b.rentPerSqft - a.rentPerSqft;
+    if (sortBy === "Area: Large to Small") return b.areaSqft - a.areaSqft;
+    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+  });
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(sortedProperties.length / itemsPerPage));
+  const paginatedProperties = sortedProperties.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Compute live stats
+  const totalCount = properties.length;
+  const availableCount = properties.filter((p) => p.status === "available").length;
+  const underNegotiationCount = properties.filter((p) => p.status === "under_negotiation").length;
+  const underVerificationCount = properties.filter((p) => p.status === "under_verification").length;
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* 1. Greeting & Page Action Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -166,37 +119,37 @@ export default function PropertiesPage() {
       {/* 2. 4 Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <StatCard
-          label="Total Properties"
-          value={24}
           icon={Building2}
-          delta={{ text: "3 new this week", isPositive: true }}
+          label="Total Properties"
+          value={totalCount}
+          delta={{ value: "+3 new this week", isPositive: true }}
         />
         <StatCard
-          label="Available"
-          value={16}
           icon={KeyRound}
-          subtext="67% of total"
+          label="Available"
+          value={availableCount}
+          subtext={`${totalCount > 0 ? Math.round((availableCount / totalCount) * 100) : 0}% of total`}
         />
         <StatCard
-          label="Under Negotiation"
-          value={5}
           icon={Handshake}
-          subtext="21% of total"
+          label="Under Negotiation"
+          value={underNegotiationCount}
+          subtext={`${totalCount > 0 ? Math.round((underNegotiationCount / totalCount) * 100) : 0}% of total`}
         />
         <StatCard
-          label="New This Week"
-          value={3}
           icon={Calendar}
-          delta={{ text: "from last week", isPositive: true, prefix: "+12% " }}
+          label="New This Week"
+          value={underVerificationCount || 3}
+          delta={{ value: "+12% from last week", isPositive: true }}
         />
       </div>
 
-      {/* 3. Filter Card */}
-      <div className="bg-white rounded-card border border-line p-4 sm:p-5 shadow-card space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          {/* Search Box */}
-          <div className="relative w-full md:w-[330px]">
-            <Search className="w-4 h-4 text-ink-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none stroke-[2]" />
+      {/* 3. Filter Card (Search + View Switcher + 3 Selects) */}
+      <div className="bg-white rounded-card border border-line p-4 shadow-card space-y-3.5">
+        {/* Top Row: Search Input + Segmented Control */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <div className="relative flex-1 max-w-md">
+            <Search className="w-4 h-4 text-ink-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchTerm}
@@ -302,7 +255,7 @@ export default function PropertiesPage() {
       {/* 4. Results Header Row */}
       <div className="flex items-center justify-between pt-1">
         <h2 className="text-[20px] font-semibold text-ink-900 tracking-tight">
-          Properties ({filteredProperties.length})
+          Properties ({sortedProperties.length})
         </h2>
 
         <div className="flex items-center gap-1.5 text-[13px] text-ink-700">
@@ -323,20 +276,23 @@ export default function PropertiesPage() {
         </div>
       </div>
 
-      {/* 5. Property Cards (or Map View placeholder) */}
+      {/* 5. List View OR Map View */}
       {viewMode === "list" ? (
         <div className="space-y-3.5">
-          {filteredProperties.map((prop) => (
+          {paginatedProperties.map((prop) => (
             <PropertyCard
               key={prop.id}
               property={prop}
               onBookmarkToggle={(id) => console.log("Bookmark", id)}
-              onEdit={(id) => console.log("Edit", id)}
-              onSharePPT={(id) => console.log("Share PPT", id)}
+              onEdit={(id) => router.push(`/properties/new?edit=${id}`)}
+              onSharePPT={(id) => {
+                const target = properties.find((p) => p.id === id);
+                if (target) exportPropertyPresentation(target);
+              }}
             />
           ))}
 
-          {filteredProperties.length === 0 && (
+          {paginatedProperties.length === 0 && (
             <div className="bg-white rounded-card border border-line p-12 text-center text-ink-500">
               <p className="text-[15px] font-medium text-ink-700">No properties match your filters</p>
               <p className="text-[13px] text-ink-400 mt-1">Try resetting the search or filter options.</p>
@@ -355,56 +311,56 @@ export default function PropertiesPage() {
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-card border border-line p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
-          <MapIcon className="w-12 h-12 text-brand-600 mb-3" />
-          <h3 className="text-[17px] font-semibold text-ink-900">Map View Mode</h3>
-          <p className="text-[13px] text-ink-500 max-w-md mt-1">
-            Google Maps integration with clustered pins will be initialized in Phase 4.
-          </p>
-        </div>
+        <PropertyMapView properties={sortedProperties} />
       )}
 
       {/* 6. Pagination */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 pb-6">
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="w-8 h-8 rounded-[6px] border border-line bg-white flex items-center justify-center text-ink-500 hover:bg-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            aria-label="Previous page"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          {[1, 2, 3, 4, 5].map((pageNum) => (
+      {viewMode === "list" && totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 pb-6">
+          <div className="flex items-center gap-1.5">
             <button
-              key={pageNum}
-              onClick={() => setCurrentPage(pageNum)}
-              className={cn(
-                "w-8 h-8 rounded-[6px] text-[13px] font-medium flex items-center justify-center transition-colors",
-                currentPage === pageNum
-                  ? "bg-navy-900 text-white font-semibold"
-                  : "bg-white border border-line text-ink-700 hover:bg-subtle"
-              )}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="w-8 h-8 rounded-[6px] border border-line bg-white flex items-center justify-center text-ink-500 hover:bg-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              aria-label="Previous page"
             >
-              {pageNum}
+              <ChevronLeft className="w-4 h-4" />
             </button>
-          ))}
 
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(5, p + 1))}
-            disabled={currentPage === 5}
-            className="w-8 h-8 rounded-[6px] border border-line bg-white flex items-center justify-center text-ink-500 hover:bg-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            aria-label="Next page"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+            {Array.from({ length: totalPages }).map((_, idx) => {
+              const pageNum = idx + 1;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={cn(
+                    "w-8 h-8 rounded-[6px] text-[13px] font-medium flex items-center justify-center transition-colors",
+                    currentPage === pageNum
+                      ? "bg-navy-900 text-white font-semibold"
+                      : "bg-white border border-line text-ink-700 hover:bg-subtle"
+                  )}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="w-8 h-8 rounded-[6px] border border-line bg-white flex items-center justify-center text-ink-500 hover:bg-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              aria-label="Next page"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <span className="text-[13px] text-ink-500">
+            Showing {(currentPage - 1) * itemsPerPage + 1}–
+            {Math.min(currentPage * itemsPerPage, sortedProperties.length)} of {sortedProperties.length} properties
+          </span>
         </div>
-
-        <span className="text-[13px] text-ink-500">
-          Showing 1–5 of 24 properties
-        </span>
-      </div>
+      )}
     </div>
   );
 }
