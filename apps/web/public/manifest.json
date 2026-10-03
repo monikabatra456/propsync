@@ -1,0 +1,22 @@
+{
+  "name": "PropSync — Commercial Real Estate Management",
+  "short_name": "PropSync",
+  "description": "Responsive real estate inventory, GPS field data collection, and property management PWA.",
+  "start_url": "/properties",
+  "display": "standalone",
+  "background_color": "#0F2A5C",
+  "theme_color": "#0F2A5C",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
