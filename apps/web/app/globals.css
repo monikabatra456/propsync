@@ -1,0 +1,27 @@
+@import "../styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: var(--border);
+    box-sizing: border-box;
+  }
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-900);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Custom utility classes matching design specs */
+.sidebar-gradient {
+  background: linear-gradient(180deg, #0F2A5C 0%, #0B1F44 100%);
+}
+
+.login-hero-overlay {
+  background: linear-gradient(180deg, rgba(20,48,94,0.85) 0%, rgba(20,48,94,0.35) 55%, rgba(11,31,68,0.9) 100%);
+}

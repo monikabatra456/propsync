@@ -1,0 +1,35 @@
+:root {
+  /* Brand */
+  --navy-900: #0B1F44;   /* sidebar bottom / deepest */
+  --navy-800: #0F2A5C;   /* sidebar top, primary text on light */
+  --navy-700: #14305E;   /* primary buttons (Login, Add New Property, View Details) */
+  --blue-600: #2F5FA3;   /* sidebar active item bg */
+  --blue-link: #1560D4;  /* links: Forgot password?, Open in Maps */
+  --teal-500: #2FA0A8;   /* accent line under tagline, checkbox, brand underline */
+
+  /* Surfaces */
+  --bg-page: #F3F6FB;    /* app background */
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F7F9FC;  /* table header, tinted blocks */
+  --bg-info: #E9F1FC;    /* info banners, "Tips" box */
+  --bg-success-soft: #E8F6F0; /* verified/location banner */
+  --border: #E3E8F0;
+  --border-strong: #D3DBE6;
+
+  /* Text */
+  --text-900: #0F2547;   /* headings */
+  --text-700: #34455F;   /* body */
+  --text-500: #6B7A90;   /* secondary / helper */
+  --text-400: #98A4B5;   /* placeholders */
+  --text-on-dark: #FFFFFF;
+  --text-on-dark-muted: #B8C5DB;
+
+  /* Status */
+  --green-600: #1E9E6A;  --green-50: #E3F6EE;   /* Available, Active, Verified, Valid */
+  --orange-600: #E8870E; --orange-50: #FFF0D9;  /* Under Verification, Pending */
+  --gray-600: #5B6B80;   --gray-100: #ECEFF4;   /* Rented */
+  --red-600: #E5484D;    --red-50: #FDECEC;     /* Delete, Reject, Owner */
+  --purple-600: #6B4FD8; --purple-50: #EDE7FB;  /* Admin */
+  --blue-500: #2563C9;   --blue-50: #E3EEFC;    /* Sales, View, Edit */
+  --teal-600: #1B8F94;   --teal-50: #DFF3F3;    /* Create */
+}
