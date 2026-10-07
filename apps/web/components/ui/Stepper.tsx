@@ -23,8 +23,8 @@ export function Stepper({
   className,
 }: StepperProps) {
   return (
-    <div className={cn("w-full py-4", className)}>
-      <div className="flex items-center justify-between max-w-3xl mx-auto px-4 relative">
+    <div className={cn("w-full py-4 select-none", className)}>
+      <div className="flex items-center justify-between max-w-4xl mx-auto px-4 relative">
         {steps.map((step, idx) => {
           const isCompleted = step.id < currentStep;
           const isActive = step.id === currentStep;
@@ -37,34 +37,34 @@ export function Stepper({
                 <div
                   className={cn(
                     "absolute top-5 left-1/2 w-full h-[1px] -z-0 transition-colors",
-                    isCompleted ? "bg-navy-700" : "bg-[#BFD2EC]"
+                    isCompleted ? "bg-[#1769EB]" : "bg-[#DCE8F5]"
                   )}
                 />
               )}
 
-              {/* Step Circle */}
+              {/* Step Circle (40px) */}
               <button
                 type="button"
                 disabled={!isCompleted && !isActive}
                 onClick={() => isCompleted && onStepClick?.(step.id)}
                 className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center text-[15px] font-semibold transition-all relative z-10 select-none",
-                  isActive && "bg-navy-700 text-white shadow-sm ring-4 ring-navy-700/10",
-                  isCompleted && "bg-navy-700 text-white cursor-pointer hover:bg-navy-800",
-                  !isActive && !isCompleted && "bg-white border border-[#BFD2EC] text-brand-600"
+                  isActive && "bg-[#0B2B57] text-white font-bold ring-4 ring-[#0B2B57]/15 shadow-sm",
+                  isCompleted && "bg-[#0B2B57] text-white cursor-pointer hover:bg-[#071D3F]",
+                  !isActive && !isCompleted && "bg-white border border-[#DCE8F5] text-[#6F87A5]"
                 )}
                 aria-label={`Step ${step.id}: ${step.label}`}
               >
-                {isCompleted ? <Check className="w-5 h-5 stroke-[2.2]" /> : step.id}
+                {isCompleted ? <Check className="w-5 h-5 stroke-[2.2] text-[#16B77A]" /> : step.id}
               </button>
 
-              {/* Label */}
+              {/* Label 14px */}
               <span
                 className={cn(
-                  "text-[13px] mt-2 font-medium text-center transition-colors whitespace-nowrap",
-                  isActive && "text-navy-800 font-semibold",
-                  isCompleted && "text-ink-700",
-                  !isActive && !isCompleted && "text-ink-500"
+                  "text-[14px] mt-2 text-center transition-colors whitespace-nowrap",
+                  isActive && "text-[#0B2B57] font-bold",
+                  isCompleted && "text-[#102F57] font-medium",
+                  !isActive && !isCompleted && "text-[#6F87A5]"
                 )}
               >
                 {step.label}

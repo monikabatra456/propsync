@@ -1,35 +1,194 @@
 :root {
-  /* Brand */
-  --navy-900: #0B1F44;   /* sidebar bottom / deepest */
-  --navy-800: #0F2A5C;   /* sidebar top, primary text on light */
-  --navy-700: #14305E;   /* primary buttons (Login, Add New Property, View Details) */
-  --blue-600: #2F5FA3;   /* sidebar active item bg */
-  --blue-link: #1560D4;  /* links: Forgot password?, Open in Maps */
-  --teal-500: #2FA0A8;   /* accent line under tagline, checkbox, brand underline */
+  /* Core — exact from mockup palette */
+  --navy:        #0B2B57;
+  --blue:        #1769EB;   /* primary action, active nav, progress */
+  --blue-light:  #EAF3FF;   /* icon tiles, info boxes, hover tint */
+  --bg:          #F5F8FC;   /* page canvas */
+  --white:       #FFFFFF;
+  --border:      #DCE8F5;
+  --success:     #16B77A;
+  --warning:     #F4B740;
+  --text:        #102F57;
+  --muted:       #6F87A5;
 
-  /* Surfaces */
-  --bg-page: #F3F6FB;    /* app background */
-  --bg-card: #FFFFFF;
-  --bg-subtle: #F7F9FC;  /* table header, tinted blocks */
-  --bg-info: #E9F1FC;    /* info banners, "Tips" box */
-  --bg-success-soft: #E8F6F0; /* verified/location banner */
-  --border: #E3E8F0;
-  --border-strong: #D3DBE6;
+  /* Derived (~) */
+  --navy-deep:   #071D3F;   /* sidebar gradient bottom */
+  --blue-hover:  #0F57CC;
+  --blue-soft:   #DCEBFF;
+  --canvas-wash: radial-gradient(1200px 400px at 85% -10%, #E6F0FF 0%, transparent 60%), #F5F8FC;
 
-  /* Text */
-  --text-900: #0F2547;   /* headings */
-  --text-700: #34455F;   /* body */
-  --text-500: #6B7A90;   /* secondary / helper */
-  --text-400: #98A4B5;   /* placeholders */
-  --text-on-dark: #FFFFFF;
-  --text-on-dark-muted: #B8C5DB;
+  --success-soft:#E3F7EE;  --success-ink:#0F9D63;
+  --warning-soft:#FFF3D6;  --warning-ink:#B7791F;
+  --orange-soft: #FFF1DC;  --orange-ink: #E08A00;   /* Negotiation, Document Review, Under Verification */
+  --danger-soft: #FDECEC;  --danger-ink: #E5484D;   /* Overdue, Google Ads */
+  --purple-soft: #F0EAFD;  --purple-ink: #7A4FE0;   /* Follow Up, Referral, In Discussion, Admin */
+  --teal-soft:   #E1F6F6;  --teal-ink:   #12A3A3;   /* Property Portals */
+  --gray-soft:   #EEF2F7;  --gray-ink:   #6F87A5;   /* Not Interested, Industrial */
 
-  /* Status */
-  --green-600: #1E9E6A;  --green-50: #E3F6EE;   /* Available, Active, Verified, Valid */
-  --orange-600: #E8870E; --orange-50: #FFF0D9;  /* Under Verification, Pending */
-  --gray-600: #5B6B80;   --gray-100: #ECEFF4;   /* Rented */
-  --red-600: #E5484D;    --red-50: #FDECEC;     /* Delete, Reject, Owner */
-  --purple-600: #6B4FD8; --purple-50: #EDE7FB;  /* Admin */
-  --blue-500: #2563C9;   --blue-50: #E3EEFC;    /* Sales, View, Edit */
-  --teal-600: #1B8F94;   --teal-50: #DFF3F3;    /* Create */
+  --shadow-sm: 0 1px 2px rgba(11,43,87,.04), 0 2px 8px rgba(11,43,87,.04);
+  --shadow-md: 0 4px 12px rgba(11,43,87,.06), 0 12px 32px rgba(11,43,87,.08);
+  --shadow-lg: 0 8px 24px rgba(11,43,87,.10), 0 24px 56px rgba(11,43,87,.14);
+  --ring: 0 0 0 3px rgba(23,105,235,.25);
+
+  --dur-fast: 150ms;   /* hover, press, focus */
+  --dur-base: 250ms;   /* dropdowns, toggles, tabs */
+  --dur-slow: 400ms;   /* page/card entrance */
+  --dur-flip: 600ms;   /* card flip */
+  --dur-chart: 900ms;  /* charts, counters, progress */
+  --ease-out:    cubic-bezier(.22,1,.36,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+
+  /* Legacy aliases retained for backward-compatibility */
+  --navy-900: var(--navy);
+  --navy-800: #0D2D5B;
+  --navy-700: #14376B;
+  --brand-600: var(--blue);
+  --brand-link: var(--blue);
+  --brand-teal: var(--teal-ink);
+
+  --bg-page: var(--bg);
+  --bg-card: var(--white);
+  --bg-subtle: #F5F8FC;
+  --bg-info: var(--blue-light);
+  --bg-success-soft: var(--success-soft);
+  --border-strong: var(--border);
+
+  --text-900: var(--text);
+  --text-700: #25406B;
+  --text-500: var(--muted);
+  --text-400: #889EB8;
+  --text-on-dark: var(--white);
+  --text-on-dark-muted: #D5E2F5;
+
+  --green-600: var(--success-ink);
+  --green-50: var(--success-soft);
+  --orange-600: var(--orange-ink);
+  --orange-50: var(--orange-soft);
+  --gray-600: var(--gray-ink);
+  --gray-100: var(--gray-soft);
+  --red-600: var(--danger-ink);
+  --red-50: var(--danger-soft);
+  --purple-600: var(--purple-ink);
+  --purple-50: var(--purple-soft);
+  --blue-500: var(--blue);
+  --blue-50: var(--blue-light);
+  --teal-600: var(--teal-ink);
+  --teal-50: var(--teal-soft);
+}
+
+/* 3D Card Flip */
+.flip {
+  perspective: 1000px;
+}
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform var(--dur-flip) var(--ease-in-out);
+}
+.flip[data-flipped="true"] .flip-inner {
+  transform: rotateY(180deg);
+}
+@media (hover: hover) {
+  .flip:hover .flip-inner {
+    transform: rotateY(180deg);
+  }
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.flip-back {
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner {
+    transition: none;
+    transform: none !important;
+  }
+  .flip-face {
+    transition: opacity 200ms;
+  }
+  .flip-back {
+    transform: none;
+    opacity: 0;
+  }
+  .flip[data-flipped="true"] .flip-front {
+    opacity: 0;
+  }
+  .flip[data-flipped="true"] .flip-back {
+    opacity: 1;
+  }
+}
+
+/* Custom keyframes */
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(23,105,235,.45); }
+  100% { box-shadow: 0 0 0 14px rgba(23,105,235,0); }
+}
+
+@keyframes wave {
+  0%,60%,100% { transform: rotate(0); }
+  10%,30% { transform: rotate(14deg); }
+  20%,40% { transform: rotate(-8deg); }
+  50% { transform: rotate(10deg); }
+}
+
+@keyframes ring {
+  0%,100% { transform: rotate(0); }
+  20% { transform: rotate(14deg); }
+  40% { transform: rotate(-12deg); }
+  60% { transform: rotate(8deg); }
+  80% { transform: rotate(-4deg); }
+}
+
+@keyframes pinDrop {
+  0% { transform: translateY(-40px); opacity: 0; }
+  60% { transform: translateY(4px); opacity: 1; }
+  80% { transform: translateY(-4px); }
+  100% { transform: none; }
+}
+
+.animate-fadeUp {
+  animation: fadeUp var(--dur-slow) var(--ease-out) forwards;
+}
+
+.animate-wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave 1.8s ease-in-out infinite;
+}
+
+.animate-pulseRing {
+  animation: pulseRing 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.animate-pinDrop {
+  animation: pinDrop 0.6s var(--ease-spring) forwards;
+}
+
+.card-v2 {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.card-v2:hover {
+  box-shadow: var(--shadow-md);
 }

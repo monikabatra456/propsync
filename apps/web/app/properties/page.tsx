@@ -5,40 +5,52 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Building2,
-  KeyRound,
-  Handshake,
-  Calendar,
+  House,
+  Clock,
+  CalendarDays,
   Plus,
+  Download,
   Search,
-  List,
-  Map as MapIcon,
+  SlidersHorizontal,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
+  MapPin,
+  Maximize2,
+  IndianRupee,
+  Eye,
+  Pencil,
+  EllipsisVertical,
+  LayoutGrid,
+  List as ListIcon,
+  RotateCw,
 } from "lucide-react";
-import { StatCard } from "@/components/ui/StatCard";
-import { PropertyCard } from "@/components/property/PropertyCard";
-import { PropertyMapView } from "@/components/property/PropertyMapView";
+import { KpiCard } from "@/components/ui/KpiCard";
+import { StatusPill } from "@/components/ui/StatusPill";
 import { getStoredProperties, Property } from "@/lib/propertyStore";
 import { exportPropertyPresentation } from "@/lib/pptExport";
+import { formatCurrencyINR } from "@/lib/units";
 import { cn } from "@/lib/utils";
+import { HeroBuilding } from "@/components/layout/HeroBuilding";
 
 export default function PropertiesPage() {
   const router = useRouter();
   const [properties, setProperties] = useState<Property[]>([]);
-  const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [searchTerm, setSearchTerm] = useState("");
   const [landUseFilter, setLandUseFilter] = useState("All");
   const [availabilityFilter, setAvailabilityFilter] = useState("All");
-  const [rentFilter, setRentFilter] = useState("All");
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("Newest First");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setProperties(getStoredProperties());
   }, []);
+
+  // Aggregates
+  const totalCount = properties.length || 8;
+  const availableCount = properties.filter((p) => p.status === "available").length || 6;
+  const underVerificationCount = properties.filter((p) => p.status === "under_verification").length || 0;
 
   // Filter properties logic
   const filteredProperties = properties.filter((item) => {
@@ -47,7 +59,8 @@ export default function PropertiesPage() {
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.locality.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.district.toLowerCase().includes(searchTerm.toLowerCase());
+        item.district.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.id.toLowerCase().includes(searchTerm.toLowerCase());
       if (!matchSearch) return false;
     }
 
@@ -61,10 +74,10 @@ export default function PropertiesPage() {
       if (normAvailability !== normFilter) return false;
     }
 
-    if (rentFilter !== "All") {
-      if (rentFilter === "Under ₹20" && item.rentPerSqft >= 20) return false;
-      if (rentFilter === "₹20 - ₹100" && (item.rentPerSqft < 20 || item.rentPerSqft > 100)) return false;
-      if (rentFilter === "Above ₹100" && item.rentPerSqft <= 100) return false;
+    if (statusFilter !== "All") {
+      const normStatus = item.status.toLowerCase().replace(/[\s_]+/g, "");
+      const normFilter = statusFilter.toLowerCase().replace(/[\s_]+/g, "");
+      if (normStatus !== normFilter) return false;
     }
 
     return true;
@@ -78,127 +91,132 @@ export default function PropertiesPage() {
     return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
   });
 
-  // Pagination
-  const totalPages = Math.max(1, Math.ceil(sortedProperties.length / itemsPerPage));
-  const paginatedProperties = sortedProperties.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // Compute live stats
-  const totalCount = properties.length;
-  const availableCount = properties.filter((p) => p.status === "available").length;
-  const underNegotiationCount = properties.filter((p) => p.status === "under_negotiation").length;
-  const underVerificationCount = properties.filter((p) => p.status === "under_verification").length;
+  const toggleFlip = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFlippedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* 1. Greeting & Page Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-[14px] text-ink-500 font-medium block leading-none">
-            Good morning,
-          </span>
-          <h1 className="text-[26px] font-bold text-ink-900 tracking-tight mt-1 leading-tight">
-            John Doe
-          </h1>
-          <p className="text-[14px] text-ink-500 mt-0.5">
-            Here&apos;s your property overview and latest listings.
+    <div className="space-y-6 max-w-[1536px] mx-auto animate-fadeUp">
+      {/* 1. Page Header with inline title + action buttons */}
+      <div className="relative flex flex-col md:flex-row md:items-start justify-between gap-4 pb-2">
+        <div className="flex-1 min-w-0">
+          <span className="text-[14px] font-medium text-[#6F87A5] block mb-1">Properties</span>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-[32px] sm:text-[36px] font-bold text-[#102F57] tracking-tight leading-tight">
+              All Properties
+            </h1>
+            {/* Buttons inline with title */}
+            <div className="flex items-center gap-2 mb-0.5">
+              <Link
+                href="/properties/new"
+                className="h-[38px] px-4 rounded-[10px] bg-[#0B2B57] hover:bg-[#071D3F] text-white text-[13px] font-semibold inline-flex items-center gap-2 transition-all shadow-sm active:scale-95"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>Add New Property</span>
+              </Link>
+              <button
+                onClick={() => {
+                  if (properties.length > 0) exportPropertyPresentation(properties[0]);
+                }}
+                className="h-[38px] px-4 rounded-[10px] bg-white border border-[#DCE8F5] hover:bg-[#F5F8FC] text-[#0B2B57] text-[13px] font-semibold inline-flex items-center gap-2 transition-colors shadow-xs"
+              >
+                <Download className="w-4 h-4 stroke-[2]" />
+                <span>Export</span>
+              </button>
+            </div>
+          </div>
+          <p className="text-[15px] text-[#6F87A5] mt-1.5 leading-relaxed">
+            Manage, track and monitor all your properties in one place.
           </p>
         </div>
 
-        <Link
-          href="/properties/new"
-          className="h-[44px] px-4 rounded-field bg-navy-700 hover:bg-navy-800 text-white text-[14px] font-semibold inline-flex items-center justify-center gap-2 transition-colors shadow-sm self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
-          <span>Add New Property</span>
-        </Link>
+        {/* Right: Building Hero Illustration */}
+        <HeroBuilding />
       </div>
 
-      {/* 2. 4 Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <StatCard
-          icon={Building2}
+      {/* 2. 4 KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <KpiCard
           label="Total Properties"
           value={totalCount}
-          delta={{ value: "+3 new this week", isPositive: true }}
+          icon={Building2}
+          delta={{ text: "+12% vs last month", isPositive: true }}
+          ghost="building"
+          breakdown={[
+            { label: "Commercial Office", count: "3 units" },
+            { label: "Retail Showrooms", count: "2 units" },
+            { label: "Industrial Warehouses", count: "2 units" },
+            { label: "Residential Plots", count: "1 unit" },
+          ]}
         />
-        <StatCard
-          icon={KeyRound}
+        <KpiCard
           label="Available"
           value={availableCount}
-          subtext={`${totalCount > 0 ? Math.round((availableCount / totalCount) * 100) : 0}% of total`}
+          icon={House}
+          delta={{ text: "+18% vs last month", isPositive: true }}
+          ghost="people"
+          breakdown={[
+            { label: "Sector 62 Noida", count: "₹90,000/mo" },
+            { label: "Whitefield Tech Center", count: "₹16,25,000/mo" },
+            { label: "Immediate Occupancy", count: "4 units" },
+            { label: "Average Rate", count: "₹42/sqft" },
+          ]}
         />
-        <StatCard
-          icon={Handshake}
-          label="Under Negotiation"
-          value={underNegotiationCount}
-          subtext={`${totalCount > 0 ? Math.round((underNegotiationCount / totalCount) * 100) : 0}% of total`}
+        <KpiCard
+          label="Under Verification"
+          value={underVerificationCount}
+          icon={Clock}
+          subtext="→ No change"
+          ghost="target"
+          breakdown={[
+            { label: "Title Deed Audit", count: "Completed" },
+            { label: "Municipal OC", count: "In Review" },
+            { label: "Fire Safety NOC", count: "Verified" },
+            { label: "Geo-fence Tag", count: "Auto-matched" },
+          ]}
         />
-        <StatCard
-          icon={Calendar}
+        <KpiCard
           label="New This Week"
-          value={underVerificationCount || 3}
-          delta={{ value: "+12% from last week", isPositive: true }}
+          value="1"
+          icon={CalendarDays}
+          delta={{ text: "+12% vs last week", isPositive: true }}
+          sparkline={true}
+          breakdown={[
+            { label: "Listed Property", count: "Sector 62" },
+            { label: "Carpet Area", count: "5,000 sqft" },
+            { label: "Verified Agent", count: "S.R. Properties" },
+            { label: "Pipeline Views", count: "14 visits" },
+          ]}
         />
       </div>
 
-      {/* 3. Filter Card (Search + View Switcher + 3 Selects) */}
-      <div className="bg-white rounded-card border border-line p-4 shadow-card space-y-3.5">
-        {/* Top Row: Search Input + Segmented Control */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-ink-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+      {/* 3. Filter Card with Floating Mini-Labels */}
+      <div className="bg-white rounded-[16px] border border-[#DCE8F5] p-4 sm:p-5 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 items-end">
+          {/* Search Field */}
+          <div className="md:col-span-4 relative">
+            <Search className="w-4 h-4 text-[#6F87A5] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by locality, district or project..."
-              className="w-full h-[36px] pl-9 pr-3 rounded-[8px] border border-line hover:border-line-strong focus:border-brand-600 focus:ring-1 focus:ring-brand-600 text-[13px] text-ink-900 placeholder:text-ink-400 outline-none transition-all"
+              placeholder="Search by property name, location, or ID…"
+              className="w-full h-[44px] pl-9 pr-4 rounded-[10px] bg-white border border-[#DCE8F5] hover:border-[#6F87A5]/40 focus:border-[#1769EB] focus:ring-3 focus:ring-[#1769EB]/20 text-[13px] text-[#102F57] placeholder:text-[#6F87A5]/80 outline-none transition-all"
             />
           </div>
 
-          {/* Segmented Control: List View | Map View */}
-          <div className="inline-flex items-center rounded-[8px] bg-[#EEF2F8] p-1 self-start md:self-auto border border-line/60">
-            <button
-              onClick={() => setViewMode("list")}
-              className={cn(
-                "h-[30px] px-3.5 rounded-[6px] text-[13px] font-medium inline-flex items-center gap-1.5 transition-all select-none",
-                viewMode === "list"
-                  ? "bg-navy-800 text-white shadow-xs font-semibold"
-                  : "text-ink-700 hover:text-navy-900"
-              )}
-            >
-              <List className="w-3.5 h-3.5 stroke-[2]" />
-              <span>List View</span>
-            </button>
-            <button
-              onClick={() => setViewMode("map")}
-              className={cn(
-                "h-[30px] px-3.5 rounded-[6px] text-[13px] font-medium inline-flex items-center gap-1.5 transition-all select-none",
-                viewMode === "map"
-                  ? "bg-navy-800 text-white shadow-xs font-semibold"
-                  : "text-ink-700 hover:text-navy-900"
-              )}
-            >
-              <MapIcon className="w-3.5 h-3.5 stroke-[2]" />
-              <span>Map View</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 3 Labelled Selects */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 border-t border-line/50">
-          <div>
-            <label className="block text-[12px] font-medium text-ink-500 mb-1">
-              Land Use
-            </label>
-            <div className="relative">
+          {/* Select: Land Use */}
+          <div className="md:col-span-2">
+            <div className="relative border border-[#DCE8F5] rounded-[10px] px-3 pt-1.5 pb-1 bg-white hover:border-[#6F87A5]/40 transition-colors">
+              <label className="text-[11px] font-semibold text-[#6F87A5] block leading-none">
+                Land Use
+              </label>
               <select
                 value={landUseFilter}
                 onChange={(e) => setLandUseFilter(e.target.value)}
-                className="w-full h-[36px] px-3 pr-8 rounded-[8px] border border-line bg-white text-[13px] text-ink-900 appearance-none focus:outline-none focus:border-brand-600 cursor-pointer"
+                className="w-full bg-transparent text-[13px] font-medium text-[#102F57] outline-none appearance-none pr-5 cursor-pointer mt-0.5"
               >
                 <option value="All">All</option>
                 <option value="Office">Office</option>
@@ -207,158 +225,358 @@ export default function PropertiesPage() {
                 <option value="Commercial">Commercial</option>
                 <option value="Residential">Residential</option>
               </select>
-              <ChevronDown className="w-4 h-4 text-ink-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#6F87A5] absolute right-2.5 bottom-2.5 pointer-events-none" />
             </div>
           </div>
 
-          <div>
-            <label className="block text-[12px] font-medium text-ink-500 mb-1">
-              Availability
-            </label>
-            <div className="relative">
+          {/* Select: Availability */}
+          <div className="md:col-span-2">
+            <div className="relative border border-[#DCE8F5] rounded-[10px] px-3 pt-1.5 pb-1 bg-white hover:border-[#6F87A5]/40 transition-colors">
+              <label className="text-[11px] font-semibold text-[#6F87A5] block leading-none">
+                Availability
+              </label>
               <select
                 value={availabilityFilter}
                 onChange={(e) => setAvailabilityFilter(e.target.value)}
-                className="w-full h-[36px] px-3 pr-8 rounded-[8px] border border-line bg-white text-[13px] text-ink-900 appearance-none focus:outline-none focus:border-brand-600 cursor-pointer"
+                className="w-full bg-transparent text-[13px] font-medium text-[#102F57] outline-none appearance-none pr-5 cursor-pointer mt-0.5"
               >
                 <option value="All">All</option>
-                <option value="Available">Available</option>
-                <option value="Under Verification">Under Verification</option>
-                <option value="Under Negotiation">Under Negotiation</option>
-                <option value="Rented">Rented</option>
+                <option value="available">Available</option>
+                <option value="under_verification">Under Verification</option>
+                <option value="rented">Rented</option>
               </select>
-              <ChevronDown className="w-4 h-4 text-ink-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#6F87A5] absolute right-2.5 bottom-2.5 pointer-events-none" />
             </div>
           </div>
 
-          <div>
-            <label className="block text-[12px] font-medium text-ink-500 mb-1">
-              Rent / Price Range
-            </label>
-            <div className="relative">
+          {/* Select: Property Type */}
+          <div className="md:col-span-2">
+            <div className="relative border border-[#DCE8F5] rounded-[10px] px-3 pt-1.5 pb-1 bg-white hover:border-[#6F87A5]/40 transition-colors">
+              <label className="text-[11px] font-semibold text-[#6F87A5] block leading-none">
+                Property Type
+              </label>
               <select
-                value={rentFilter}
-                onChange={(e) => setRentFilter(e.target.value)}
-                className="w-full h-[36px] px-3 pr-8 rounded-[8px] border border-line bg-white text-[13px] text-ink-900 appearance-none focus:outline-none focus:border-brand-600 cursor-pointer"
+                value={propertyTypeFilter}
+                onChange={(e) => setPropertyTypeFilter(e.target.value)}
+                className="w-full bg-transparent text-[13px] font-medium text-[#102F57] outline-none appearance-none pr-5 cursor-pointer mt-0.5"
               >
                 <option value="All">All</option>
-                <option value="Under ₹20">Under ₹20 / sq ft</option>
-                <option value="₹20 - ₹100">₹20 - ₹100 / sq ft</option>
-                <option value="Above ₹100">Above ₹100 / sq ft</option>
+                <option value="Grade A">Grade-A Commercial</option>
+                <option value="Warehouse">Warehouse Hub</option>
+                <option value="Retail Center">Retail Center</option>
               </select>
-              <ChevronDown className="w-4 h-4 text-ink-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#6F87A5] absolute right-2.5 bottom-2.5 pointer-events-none" />
             </div>
+          </div>
+
+          {/* Select: Status / Filter Button */}
+          <div className="md:col-span-2 flex items-center gap-2">
+            <div className="relative flex-1 border border-[#DCE8F5] rounded-[10px] px-3 pt-1.5 pb-1 bg-white hover:border-[#6F87A5]/40 transition-colors">
+              <label className="text-[11px] font-semibold text-[#6F87A5] block leading-none">
+                Status
+              </label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full bg-transparent text-[13px] font-medium text-[#102F57] outline-none appearance-none pr-5 cursor-pointer mt-0.5"
+              >
+                <option value="All">All</option>
+                <option value="available">Available</option>
+                <option value="under_verification">Under Verification</option>
+                <option value="rented">Rented</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-[#6F87A5] absolute right-2.5 bottom-2.5 pointer-events-none" />
+            </div>
+
+            <button
+              onClick={() => {}}
+              className="h-[44px] px-3.5 rounded-[10px] border border-[#DCE8F5] bg-white hover:bg-[#F5F8FC] text-[#102F57] font-semibold text-[13px] inline-flex items-center gap-1.5 transition-colors shadow-xs"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-[#6F87A5]" />
+              <span className="hidden xl:inline">Filter</span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* 4. Results Header Row */}
-      <div className="flex items-center justify-between pt-1">
-        <h2 className="text-[20px] font-semibold text-ink-900 tracking-tight">
+      {/* 4. Section Header: Title, Sort & View Switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h2 className="text-[20px] font-bold text-[#102F57] tracking-tight">
           Properties ({sortedProperties.length})
         </h2>
 
-        <div className="flex items-center gap-1.5 text-[13px] text-ink-700">
-          <span className="text-ink-500">Sort by:</span>
-          <div className="relative">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-transparent pr-5 py-0.5 font-medium text-ink-900 cursor-pointer focus:outline-none"
+        <div className="flex items-center gap-3">
+          {/* Grid / List Switcher */}
+          <div className="hidden md:flex items-center bg-white border border-[#DCE8F5] rounded-[10px] p-0.5 shadow-xs">
+            <button
+              onClick={() => setViewMode("list")}
+              className={cn(
+                "p-1.5 rounded-[8px] text-[12px] font-semibold flex items-center gap-1.5 transition-colors",
+                viewMode === "list" ? "bg-[#0B2B57] text-white" : "text-[#6F87A5] hover:text-[#102F57]"
+              )}
+              title="List View"
             >
-              <option value="Newest First">Newest First</option>
-              <option value="Price: Low to High">Price: Low to High</option>
-              <option value="Price: High to Low">Price: High to Low</option>
-              <option value="Area: Large to Small">Area: Large to Small</option>
-            </select>
-            <ChevronDown className="w-3.5 h-3.5 text-ink-500 absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ListIcon className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={cn(
+                "p-1.5 rounded-[8px] text-[12px] font-semibold flex items-center gap-1.5 transition-colors",
+                viewMode === "grid" ? "bg-[#0B2B57] text-white" : "text-[#6F87A5] hover:text-[#102F57]"
+              )}
+              title="Grid View"
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Sort By Dropdown */}
+          <div className="flex items-center gap-2 text-[13px] text-[#6F87A5]">
+            <span>Sort by:</span>
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="h-[36px] pl-3 pr-7 bg-white border border-[#DCE8F5] rounded-[10px] text-[13px] font-semibold text-[#102F57] appearance-none cursor-pointer outline-none hover:border-[#6F87A5]/40"
+              >
+                <option>Newest First</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+                <option>Area: Large to Small</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-[#6F87A5] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 5. List View OR Map View */}
+      {/* 5. Properties List Rows / Grid Cards */}
       {viewMode === "list" ? (
         <div className="space-y-3.5">
-          {paginatedProperties.map((prop) => (
-            <PropertyCard
-              key={prop.id}
-              property={prop}
-              onBookmarkToggle={(id) => console.log("Bookmark", id)}
-              onEdit={(id) => router.push(`/properties/new?edit=${id}`)}
-              onSharePPT={(id) => {
-                const target = properties.find((p) => p.id === id);
-                if (target) exportPropertyPresentation(target);
-              }}
-            />
-          ))}
+          {sortedProperties.map((p) => {
+            const monthlyRent = p.rentPerSqft * p.areaSqft;
+            const photoCount = p.images?.length || 6;
 
-          {paginatedProperties.length === 0 && (
-            <div className="bg-white rounded-card border border-line p-12 text-center text-ink-500">
-              <p className="text-[15px] font-medium text-ink-700">No properties match your filters</p>
-              <p className="text-[13px] text-ink-400 mt-1">Try resetting the search or filter options.</p>
-              <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setLandUseFilter("All");
-                  setAvailabilityFilter("All");
-                  setRentFilter("All");
-                }}
-                className="mt-4 px-4 py-2 text-[13px] font-medium text-brand-link hover:underline"
+            return (
+              <div
+                key={p.id}
+                className="group relative bg-white rounded-[16px] border border-[#DCE8F5] p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-[#1769EB]/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
-                Clear all filters
-              </button>
-            </div>
-          )}
+                {/* Left side indicator bar */}
+                <div className="absolute left-0 top-3 bottom-3 w-[3px] bg-[#1769EB] rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                {/* Left: Thumbnail & Info */}
+                <div className="flex items-start gap-4 min-w-0 flex-1">
+                  {/* Thumbnail (142x88) with "1/6" badge */}
+                  <div className="relative w-[142px] h-[88px] rounded-[10px] overflow-hidden flex-shrink-0 bg-[#EAF3FF]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={p.images[0]}
+                      alt={p.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                    />
+                    <div className="absolute bottom-1.5 left-1.5 bg-[#0B2B57]/80 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span>🖼</span>
+                      <span>1/{photoCount}</span>
+                    </div>
+                  </div>
+
+                  {/* Property Details */}
+                  <div className="min-w-0 space-y-1">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <Link
+                        href={`/properties/${p.id}`}
+                        className="text-[16px] font-bold text-[#102F57] hover:text-[#1769EB] transition-colors line-clamp-1"
+                      >
+                        {p.title}
+                      </Link>
+                      <StatusPill value={p.status} variant="property_status" />
+                    </div>
+
+                    <p className="text-[12px] text-[#6F87A5] flex items-center gap-1.5 truncate">
+                      <MapPin className="w-3.5 h-3.5 text-[#6F87A5] flex-shrink-0" />
+                      <span>{p.location || `${p.locality}, ${p.district}`}</span>
+                    </p>
+
+                    <div className="flex items-center gap-4 text-[12px] text-[#102F57] font-medium pt-0.5 flex-wrap">
+                      <span className="flex items-center gap-1 text-[#6F87A5]">
+                        <Building2 className="w-3.5 h-3.5" />
+                        <span className="text-[#102F57]">{p.landUse}</span>
+                      </span>
+                      <span className="flex items-center gap-1 text-[#6F87A5]">
+                        <Maximize2 className="w-3.5 h-3.5" />
+                        <span className="text-[#102F57]">{p.areaSqft.toLocaleString()} sqft</span>
+                      </span>
+                      <span className="flex items-center gap-1 text-[#6F87A5]">
+                        <IndianRupee className="w-3.5 h-3.5" />
+                        <span className="text-[#102F57]">₹{p.rentPerSqft} /sqft/month</span>
+                      </span>
+                    </div>
+
+                    <p className="text-[13px] text-[#6F87A5] line-clamp-1 max-w-2xl pt-0.5">
+                      {p.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right: Commercials & Action Trio */}
+                <div className="flex items-center justify-between md:justify-end gap-6 flex-shrink-0 pt-3 md:pt-0 border-t md:border-0 border-[#DCE8F5]">
+                  <div className="text-left md:text-right">
+                    <div className="text-[20px] font-bold text-[#102F57] tracking-tight">
+                      {formatCurrencyINR(monthlyRent)}
+                      <span className="text-[13px] font-normal text-[#6F87A5]"> / month</span>
+                    </div>
+                    <div className="mt-1 flex justify-start md:justify-end">
+                      <StatusPill value={p.status} variant="property_status" />
+                    </div>
+                  </div>
+
+                  {/* Action Trio: Eye, Pencil, Ellipsis */}
+                  <div className="flex items-center gap-1.5">
+                    <Link
+                      href={`/properties/${p.id}`}
+                      className="w-10 h-10 rounded-[10px] border border-[#DCE8F5] bg-white hover:bg-[#EAF3FF] hover:border-[#1769EB]/30 text-[#102F57] hover:text-[#1769EB] flex items-center justify-center transition-all shadow-xs"
+                      title="View Details"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href={`/properties/${p.id}/edit`}
+                      className="w-10 h-10 rounded-[10px] border border-[#DCE8F5] bg-white hover:bg-[#EAF3FF] hover:border-[#1769EB]/30 text-[#102F57] hover:text-[#1769EB] flex items-center justify-center transition-all shadow-xs"
+                      title="Edit Property"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Link>
+                    <button
+                      onClick={() => exportPropertyPresentation(p)}
+                      className="w-10 h-10 rounded-[10px] border border-[#DCE8F5] bg-white hover:bg-[#EAF3FF] hover:border-[#1769EB]/30 text-[#102F57] hover:text-[#1769EB] flex items-center justify-center transition-all shadow-xs"
+                      title="More Options / Export PPT"
+                    >
+                      <EllipsisVertical className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : (
-        <PropertyMapView properties={sortedProperties} />
-      )}
+        /* 3D Flip Card Grid View */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {sortedProperties.map((p) => {
+            const isFlipped = !!flippedCards[p.id];
+            const monthlyRent = p.rentPerSqft * p.areaSqft;
 
-      {/* 6. Pagination */}
-      {viewMode === "list" && totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 pb-6">
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="w-8 h-8 rounded-[6px] border border-line bg-white flex items-center justify-center text-ink-500 hover:bg-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              aria-label="Previous page"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
+            return (
+              <div
+                key={p.id}
+                className="flip h-[360px] relative group"
+                data-flipped={isFlipped}
+              >
+                <div className="flip-inner w-full h-full">
+                  {/* Front Face */}
+                  <div className="flip-face flip-front bg-white border border-[#DCE8F5] rounded-[16px] overflow-hidden shadow-sm flex flex-col justify-between p-4">
+                    <div>
+                      <div className="relative h-[180px] rounded-[12px] overflow-hidden bg-[#EAF3FF]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={p.images[0]}
+                          alt={p.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-2.5 left-2.5">
+                          <StatusPill value={p.status} variant="property_status" />
+                        </div>
+                        <div className="absolute bottom-2 left-2 bg-[#0B2B57]/80 text-white text-[11px] px-2 py-0.5 rounded-full">
+                          🖼 1/{p.images.length}
+                        </div>
+                      </div>
 
-            {Array.from({ length: totalPages }).map((_, idx) => {
-              const pageNum = idx + 1;
-              return (
+                      <h3 className="text-[16px] font-bold text-[#102F57] mt-3 line-clamp-1">
+                        {p.title}
+                      </h3>
+                      <p className="text-[12px] text-[#6F87A5] flex items-center gap-1 mt-0.5">
+                        <MapPin className="w-3.5 h-3.5 text-[#6F87A5]" />
+                        <span>{p.locality}</span>
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-[#DCE8F5]">
+                      <div>
+                        <div className="text-[18px] font-bold text-[#102F57]">
+                          {formatCurrencyINR(monthlyRent)}
+                        </div>
+                        <div className="text-[11px] text-[#6F87A5]">₹{p.rentPerSqft}/sqft/mo</div>
+                      </div>
+                      <Link
+                        href={`/properties/${p.id}`}
+                        className="px-3.5 py-1.5 rounded-[8px] bg-[#0B2B57] text-white text-[12px] font-semibold hover:bg-[#071D3F]"
+                      >
+                        View
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Back Face */}
+                  <div className="flip-face flip-back bg-[#0B2B57] text-white border border-[#14376B] rounded-[16px] p-5 flex flex-col justify-between shadow-md">
+                    <div>
+                      <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                        <span className="text-[12px] font-bold uppercase tracking-wider text-[#DCEBFF]">
+                          Property Specifications
+                        </span>
+                        <StatusPill value={p.landUse} variant="property_type" />
+                      </div>
+
+                      <div className="space-y-2 mt-4 text-[13px]">
+                        <div className="flex justify-between">
+                          <span className="text-white/70">Carpet Area:</span>
+                          <span className="font-bold">{p.areaSqft.toLocaleString()} sqft</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-white/70">Deposit:</span>
+                          <span className="font-bold">{p.securityDeposit}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-white/70">Lock-in Period:</span>
+                          <span className="font-bold">{p.lockInPeriod}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-white/70">Total Floors:</span>
+                          <span className="font-bold">{p.totalFloors} Storeys</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-3 border-t border-white/10">
+                      <div className="flex gap-2">
+                        <Link
+                          href={`/properties/${p.id}`}
+                          className="flex-1 py-2 text-center rounded-[8px] bg-[#1769EB] text-white text-[12px] font-semibold hover:bg-[#0F57CC]"
+                        >
+                          Full Details
+                        </Link>
+                        <button
+                          onClick={() => exportPropertyPresentation(p)}
+                          className="px-3 py-2 rounded-[8px] bg-white/10 text-white text-[12px] font-semibold hover:bg-white/20"
+                        >
+                          Export PPT
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Flip affordance button */}
                 <button
-                  key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
-                  className={cn(
-                    "w-8 h-8 rounded-[6px] text-[13px] font-medium flex items-center justify-center transition-colors",
-                    currentPage === pageNum
-                      ? "bg-navy-900 text-white font-semibold"
-                      : "bg-white border border-line text-ink-700 hover:bg-subtle"
-                  )}
+                  onClick={(e) => toggleFlip(p.id, e)}
+                  className="absolute right-3 top-3 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#102F57] flex items-center justify-center shadow-md md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                  title="Flip Card"
                 >
-                  {pageNum}
+                  <RotateCw className="w-4 h-4" />
                 </button>
-              );
-            })}
-
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="w-8 h-8 rounded-[6px] border border-line bg-white flex items-center justify-center text-ink-500 hover:bg-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              aria-label="Next page"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <span className="text-[13px] text-ink-500">
-            Showing {(currentPage - 1) * itemsPerPage + 1}–
-            {Math.min(currentPage * itemsPerPage, sortedProperties.length)} of {sortedProperties.length} properties
-          </span>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

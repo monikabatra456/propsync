@@ -37,6 +37,7 @@ import {
 } from "@/lib/propertyStore";
 import { AreaUnit, convertArea, formatArea, formatCurrencyINR } from "@/lib/units";
 import { cn } from "@/lib/utils";
+import { HeroBuilding } from "@/components/layout/HeroBuilding";
 
 const STEPS = [
   { id: 1, label: "Address & Location" },
@@ -77,6 +78,7 @@ function NewPropertyForm() {
   const [photos, setPhotos] = useState<string[]>([
     "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
     "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80",
   ]);
 
   // Step 2: Building & Floors
@@ -334,22 +336,27 @@ function NewPropertyForm() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
       {/* Top Header Row */}
-      <div className="flex items-center gap-3">
-        <Link
-          href="/properties"
-          className="p-2 rounded-field border border-line bg-white hover:bg-subtle text-ink-700 transition-colors"
-          aria-label="Back to properties"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <div>
-          <h1 className="text-[24px] font-bold text-ink-900 tracking-tight">
-            {editId ? "Edit Property" : "Add New Property"}
-          </h1>
-          <p className="text-[13px] text-ink-500">
-            Field data collection: GPS location, specifications, floor layout, and compliance proofs.
-          </p>
+      <div className="relative flex items-center justify-between gap-3 pb-1">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/properties"
+            className="p-2 rounded-field border border-line bg-white hover:bg-subtle text-ink-700 transition-colors"
+            aria-label="Back to properties"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <h1 className="text-[24px] font-bold text-ink-900 tracking-tight">
+              {editId ? "Edit Property" : "Add New Property"}
+            </h1>
+            <p className="text-[13px] text-ink-500">
+              Field data collection: GPS location, specifications, floor layout, and compliance proofs.
+            </p>
+          </div>
         </div>
+
+        {/* Right: Building Hero Illustration */}
+        <HeroBuilding />
       </div>
 
       {/* Main Container Card */}

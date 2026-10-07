@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-from app.routers import auth, properties, admin, media
+from app.routers import auth, properties, admin, media, leads
 
 app = FastAPI(
     title="PropSync API",
@@ -13,7 +13,14 @@ app = FastAPI(
 )
 
 # CORS configuration
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    ).split(",")
+    if origin.strip()
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -27,6 +34,7 @@ app.include_router(auth.router, prefix="/api/v1")
 app.include_router(properties.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(media.router, prefix="/api/v1")
+app.include_router(leads.router, prefix="/api/v1")
 
 
 @app.get("/health")

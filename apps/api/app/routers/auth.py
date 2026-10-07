@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from typing import Dict, Any
+from typing import Optional
 from app.core.security import get_current_user, AuthUser
 
 router = APIRouter(prefix="", tags=["Auth"])

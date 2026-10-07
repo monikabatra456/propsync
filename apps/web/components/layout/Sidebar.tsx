@@ -4,17 +4,21 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home,
+  House,
   Building2,
-  PlusCircle,
+  CirclePlus,
   Users,
+  Calendar,
+  Camera,
+  KeyRound,
   BarChart3,
   Settings,
   Shield,
-  Menu,
   X,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { PropSyncLogo } from "@/components/ui/PropSyncLogo";
+import { UserRole, ROLE_PERMISSIONS } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -25,56 +29,80 @@ interface SidebarProps {
 }
 
 export function Sidebar({
-  userRole = "admin", // default role or can be passed dynamically
+  userRole = "admin",
   isOpenMobile = false,
   onCloseMobile,
   className,
 }: SidebarProps) {
   const pathname = usePathname();
 
-  const navItems = [
+  const cleanRole = (userRole.toLowerCase().replace(/\s+/g, "_") as UserRole) || "admin";
+  const perms = ROLE_PERMISSIONS[cleanRole] ?? ROLE_PERMISSIONS.admin;
+
+  const allNavItems = [
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: Home,
+      icon: House,
+      visible: true,
     },
     {
       label: "Properties",
       href: "/properties",
       icon: Building2,
+      visible: perms.canAccessProperties,
     },
     {
       label: "Add Property",
       href: "/properties/new",
-      icon: PlusCircle,
+      icon: CirclePlus,
+      visible: perms.canAddProperty,
     },
     {
       label: "Leads",
       href: "/leads",
       icon: Users,
+      visible: perms.canAccessLeads,
+    },
+    {
+      label: "Calendar",
+      href: "/calendar",
+      icon: Calendar,
+      visible: perms.canAccessCalendar,
+    },
+    {
+      label: "Field Survey",
+      href: "/field",
+      icon: Camera,
+      visible: perms.canAccessFieldSurvey,
+    },
+    {
+      label: "My Properties",
+      href: "/owner",
+      icon: KeyRound,
+      visible: perms.canAccessOwnerPortal,
     },
     {
       label: "Reports",
       href: "/reports",
       icon: BarChart3,
+      visible: perms.canAccessReports,
     },
     {
       label: "Settings",
       href: "/settings",
       icon: Settings,
+      visible: true,
     },
-  ];
-
-  // Admin item shown only to role `admin`
-  if (userRole === "admin") {
-    navItems.push({
+    {
       label: "Admin",
       href: "/admin",
       icon: Shield,
-    });
-  }
+      visible: perms.canAccessAdmin,
+    },
+  ];
 
-  const isAdminPage = pathname?.startsWith("/admin");
+  const navItems = allNavItems.filter((i) => i.visible);
 
   return (
     <>
@@ -82,25 +110,46 @@ export function Sidebar({
       {isOpenMobile && (
         <div
           onClick={onCloseMobile}
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-xs"
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-xs transition-opacity"
         />
       )}
 
-      {/* Sidebar container */}
+      {/* Sidebar container: 220px fixed, gradient #0B2B57 -> #071D3F */}
       <aside
         className={cn(
-          "sidebar-gradient text-white w-[198px] flex-shrink-0 flex flex-col justify-between fixed top-0 bottom-0 left-0 z-50 transition-transform duration-200 select-none",
-          isOpenMobile ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          "fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between select-none transition-all duration-200",
+          "w-[220px] md:w-[72px] lg:w-[220px]",
+          "text-white overflow-hidden",
+          "bg-gradient-to-b from-[#0B2B57] to-[#071D3F] border-r border-[#14376B]/40",
+          isOpenMobile ? "translate-x-0 !w-[220px]" : "-translate-x-full lg:translate-x-0 md:translate-x-0",
           className
         )}
       >
+        {/* Faint building watermark at bottom (opacity ~.25, masked fade) */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[360px] pointer-events-none opacity-20 overflow-hidden mix-blend-screen"
+          style={{
+            maskImage: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 95%)",
+            WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 95%)",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/sidebar-bg.png"
+            className="w-full h-full object-cover object-bottom"
+            alt=""
+          />
+        </div>
+
         {/* Top Section */}
-        <div>
+        <div className="relative z-10">
           {/* Logo block */}
-          <div className="pt-6 pb-6 px-6 flex items-center justify-between">
-            <Link href="/properties" className="flex items-center gap-3">
-              <PropSyncLogo size={32} variant="white" />
-              <span className="text-[23px] font-semibold tracking-tight text-white font-sans">
+          <div className="pt-7 pb-6 px-5 flex items-center justify-between">
+            <Link href="/dashboard" className="flex items-center gap-3 group">
+              <div className="w-[30px] h-[30px] flex-shrink-0 text-white flex items-center justify-center">
+                <PropSyncLogo size={30} variant="white" />
+              </div>
+              <span className="text-[24px] font-semibold tracking-tight text-white font-sans md:hidden lg:inline leading-none">
                 PropSync
               </span>
             </Link>
@@ -108,7 +157,7 @@ export function Sidebar({
             {/* Mobile close button */}
             <button
               onClick={onCloseMobile}
-              className="lg:hidden text-white/80 hover:text-white p-1"
+              className="lg:hidden text-white/70 hover:text-white p-1"
               aria-label="Close menu"
             >
               <X className="w-5 h-5" />
@@ -122,27 +171,39 @@ export function Sidebar({
               const isActive =
                 item.href === "/properties"
                   ? pathname === "/properties" || (pathname?.startsWith("/properties/") && pathname !== "/properties/new")
-                  : pathname === item.href;
+                  : pathname === item.href || pathname?.startsWith(item.href + "/");
 
               return (
                 <Link
                   key={item.label}
                   href={item.href}
                   onClick={onCloseMobile}
+                  title={item.label}
                   className={cn(
-                    "h-[44px] px-3.5 rounded-[8px] flex items-center gap-3 text-[15px] font-medium transition-colors group relative",
+                    "relative h-[42px] px-3.5 rounded-[10px] flex items-center gap-3.5 text-[15px] font-medium transition-all group select-none",
                     isActive
-                      ? "bg-brand-600 text-white font-semibold shadow-xs"
-                      : "text-[#B8C5DB] hover:text-white hover:bg-white/10"
+                      ? "text-white font-semibold"
+                      : "text-[#D5E2F5] hover:text-white hover:bg-white/[0.08]"
                   )}
                 >
+                  {/* Active sliding pill */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="nav-pill"
+                      className="absolute inset-0 bg-[#1769EB] rounded-[10px] shadow-sm -z-0"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                  )}
+
                   <Icon
                     className={cn(
-                      "w-5 h-5 stroke-[1.8] flex-shrink-0",
-                      isActive ? "text-white stroke-[2.2]" : "text-[#B8C5DB] group-hover:text-white"
+                      "w-[22px] h-[22px] flex-shrink-0 transition-transform duration-150 relative z-10",
+                      isActive ? "text-white stroke-[2.2]" : "text-[#D5E2F5] group-hover:text-white group-hover:translate-x-0.5 stroke-[1.8]"
                     )}
                   />
-                  <span>{item.label}</span>
+                  <span className="relative z-10 md:hidden lg:inline truncate">
+                    {item.label}
+                  </span>
                 </Link>
               );
             })}
@@ -150,25 +211,17 @@ export function Sidebar({
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-5 border-t border-white/10">
+        <div className="relative z-10 p-4 border-t border-white/12 bg-[#071D3F]/40 backdrop-blur-xs">
           <div className="flex items-start gap-2.5">
-            <div className="mt-0.5 text-brand-teal">
-              {isAdminPage ? (
-                <Shield className="w-5 h-5 stroke-[2]" />
-              ) : (
-                <PropSyncLogo size={22} variant="white" />
-              )}
+            <div className="mt-0.5 text-white flex-shrink-0">
+              <PropSyncLogo size={22} variant="white" />
             </div>
-            <div>
-              <p className="text-[13px] font-medium text-white leading-tight">
-                {isAdminPage ? "Secure & Trusted" : "Smarter Real Estate Management"}
+            <div className="md:hidden lg:block min-w-0">
+              <p className="text-[13px] font-semibold text-white leading-tight truncate">
+                Smarter Real Estate Management
               </p>
-              {/* 32px teal accent line */}
-              <div className="w-8 h-[2px] bg-brand-teal rounded-full my-1.5" />
-              <p className="text-[11px] text-[#B8C5DB] leading-tight">
-                {isAdminPage
-                  ? "Your data is protected with industry standard security."
-                  : "Connect. Track. Grow."}
+              <p className="text-[11px] text-[#6F87A5] leading-tight mt-1 truncate">
+                Connect. Track. Grow.
               </p>
             </div>
           </div>
