@@ -246,7 +246,7 @@ def export_property_deck(
         raise HTTPException(status_code=404, detail="Property not found")
 
     ppt_buffer = generate_property_ppt(target)
-    filename = f"PropSync_{target['id']}_PitchDeck.pptx"
+    filename = f"Expert_Company_{target['id']}_PitchDeck.pptx"
 
     return StreamingResponse(
         ppt_buffer,

@@ -1,16 +1,16 @@
 import React from "react";
 
-interface PropSyncLogoProps {
+interface ExpertCompanyLogoProps {
   className?: string;
   size?: number;
   variant?: "white" | "navy";
 }
 
-export function PropSyncLogo({
+export function ExpertCompanyLogo({
   className = "",
   size = 34,
   variant = "white",
-}: PropSyncLogoProps) {
+}: ExpertCompanyLogoProps) {
   const strokeColor = variant === "white" ? "#FFFFFF" : "#0F2A5C";
 
   return (
@@ -21,7 +21,7 @@ export function PropSyncLogo({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      aria-label="PropSync Logo"
+      aria-label="Expert Company Logo"
     >
       {/* 3 Skyscraper / architectural outline silhouettes matching mockup */}
       <path

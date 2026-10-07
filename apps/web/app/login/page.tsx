@@ -18,7 +18,7 @@ import {
   KeyRound,
   Info,
 } from "lucide-react";
-import { PropSyncLogo } from "@/components/ui/PropSyncLogo";
+import { ExpertCompanyLogo } from "@/components/ui/ExpertCompanyLogo";
 import { cn } from "@/lib/utils";
 import { DEMO_USERS, UserRole, setCurrentUserRole } from "@/lib/permissions";
 
@@ -95,7 +95,7 @@ export default function LoginPage() {
     setIsLoading(true);
     setCurrentUserRole(selectedRole);
     if (typeof window !== "undefined") {
-      localStorage.setItem("propsync_current_email", email);
+      localStorage.setItem("expertcompany_current_email", email);
     }
     setTimeout(() => {
       setIsLoading(false);
@@ -120,8 +120,8 @@ export default function LoginPage() {
 
         <div className="relative z-10">
           <div className="flex items-center gap-3">
-            <PropSyncLogo size={36} variant="white" />
-            <span className="text-[26px] font-bold tracking-tight text-white font-sans">PropSync</span>
+            <ExpertCompanyLogo size={36} variant="white" />
+            <span className="text-[26px] font-bold tracking-tight text-white font-sans">Expert Company</span>
           </div>
           <p className="text-[16px] text-white/70 mt-1 font-medium tracking-wide">Properties · People · Progress</p>
         </div>
@@ -166,12 +166,12 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-4 sm:p-8 lg:p-12">
         <div className="w-full max-w-[524px] bg-white rounded-login p-8 sm:p-10 shadow-login border border-line">
           <div className="flex items-center gap-2.5 mb-5">
-            <PropSyncLogo size={30} variant="navy" />
-            <span className="text-[22px] font-bold text-navy-900 tracking-tight">PropSync</span>
+            <ExpertCompanyLogo size={30} variant="navy" />
+            <span className="text-[22px] font-bold text-navy-900 tracking-tight">Expert Company</span>
           </div>
 
           <h2 className="text-[28px] font-bold text-ink-900 tracking-tight">Welcome Back</h2>
-          <p className="text-[14px] text-ink-500 mt-1 mb-6">Sign in to your PropSync account</p>
+          <p className="text-[14px] text-ink-500 mt-1 mb-6">Sign in to your Expert Company account</p>
 
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Role Selection */}
@@ -326,7 +326,7 @@ export default function LoginPage() {
           </div>
 
           <p className="text-center text-[13px] text-ink-500 mt-5">
-            New to PropSync?{" "}
+            New to Expert Company?{" "}
             <Link href="/signup" className="text-brand-link font-medium hover:underline">
               Request Access
             </Link>

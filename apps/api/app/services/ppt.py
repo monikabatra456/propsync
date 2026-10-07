@@ -1,5 +1,5 @@
 """
-PropSync PowerPoint (.pptx) Presentation Generation Service
+Expert Company PowerPoint (.pptx) Presentation Generation Service
 Generates professional branded property investor decks using python-pptx.
 """
 
@@ -21,7 +21,7 @@ def generate_property_ppt(property_data: Dict[str, Any]) -> BytesIO:
     """
     if not Presentation:
         output = BytesIO()
-        text = f"PropSync Property Presentation: {property_data.get('title', 'Property Listing')}\n"
+        text = f"Expert Company Property Presentation: {property_data.get('title', 'Property Listing')}\n"
         output.write(text.encode("utf-8"))
         output.seek(0)
         return output
@@ -47,7 +47,7 @@ def generate_property_ppt(property_data: Dict[str, Any]) -> BytesIO:
     tf.word_wrap = True
 
     p_brand = tf.paragraphs[0]
-    p_brand.text = "PROPSYNC · COMMERCIAL REAL ESTATE"
+    p_brand.text = "EXPERT COMPANY · COMMERCIAL REAL ESTATE"
     p_brand.font.size = Pt(16)
     p_brand.font.bold = True
     p_brand.font.color.rgb = RGBColor(47, 160, 168) # Teal 500

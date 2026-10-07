@@ -1,1 +1,1 @@
-"""PropSync FastAPI Application"""
+"""Expert Company FastAPI Application"""

@@ -10,7 +10,7 @@ def test_health_check():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ok"
-    assert data["app"] == "PropSync API"
+    assert data["app"] == "Expert Company API"
 
 
 def test_auth_me():

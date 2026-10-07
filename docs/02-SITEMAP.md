@@ -1,4 +1,4 @@
-# PropSync — Sitemap
+﻿# Expert Company — Sitemap
 
 Legend: ✅ designed in mockup · 🟡 implied by mockup/guide, design not provided (reuse design system) · ⏳ later phase
 

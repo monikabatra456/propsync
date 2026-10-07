@@ -1,4 +1,4 @@
-# PropSync — Design System
+﻿# Expert Company — Design System
 
 Source: 5 mockups (1024 × 1536 px each). All values below are measured/estimated from those images at 1024px width = 1x. Where a value is an estimate, it is marked `~`. **Rule for the builder: when the mockup and this doc disagree, the mockup wins.**
 
@@ -96,7 +96,7 @@ Font: **Inter** (fallback `system-ui, sans-serif`). Icons: **Lucide** (1.75px st
 | Part | Spec |
 |---|---|
 | Sidebar | width **~198px**, fixed, navy gradient, full height |
-| Logo block | top 24px, left 28px; icon 34px + "PropSync" 24px/600 white |
+| Logo block | top 24px, left 28px; icon 34px + "Expert Company" 24px/600 white |
 | Nav item | height **~44px**, margin 0 12px, radius 8, icon 20 + 12px gap + label; active bg `--blue-600` |
 | Nav order | Dashboard, Properties, Add Property, Leads, Reports, Settings, **Admin (admin role only, shield icon)** |
 | Sidebar footer | shield icon, "Smarter Real Estate Management" 14/500 white, 32px teal line, "Connect. Track. Grow." 12px muted. (Admin screen variant: "Secure & Trusted — Your data is protected with industry standard security.") |

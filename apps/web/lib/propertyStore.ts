@@ -540,13 +540,13 @@ export const INITIAL_PROPERTIES: Property[] = [
   },
 ];
 
-const STORAGE_KEY = "propsync_properties_v2"; // bump version to force fresh seed
+const STORAGE_KEY = "expertcompany_properties_v2"; // bump version to force fresh seed
 
 export function resetDemoData() {
   if (typeof window !== "undefined") {
     localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem("propsync_leads_v1");
-    localStorage.removeItem("propsync_leads_v2");
+    localStorage.removeItem("expertcompany_leads_v1");
+    localStorage.removeItem("expertcompany_leads_v2");
     window.location.reload();
   }
 }

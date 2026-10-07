@@ -6,7 +6,7 @@ export function exportPropertyPresentation(property: Property) {
   const title = property.title;
   const content = `
 ================================================================================
-                    PROPSYNC PROPERTY INVESTMENT MEMORANDUM
+                    EXPERT COMPANY PROPERTY INVESTMENT MEMORANDUM
                       Properties · People · Progress
 ================================================================================
 
@@ -53,7 +53,7 @@ POINT OF CONTACT:
 ${property.contacts.map((contact) => `  - ${contact.name} (${contact.role}): ${contact.phone}${contact.email ? ` | ${contact.email}` : ""}`).join("\n")}
 
 --------------------------------------------------------------------------------
-CONFIDENTIAL — Generated via PropSync Real Estate Management System
+CONFIDENTIAL — Generated via Expert Company Real Estate Management System
 Digitally timestamped: ${new Date().toLocaleString()}
 --------------------------------------------------------------------------------
 `;
@@ -63,7 +63,7 @@ Digitally timestamped: ${new Date().toLocaleString()}
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `PropSync_${property.title.replace(/[^a-zA-Z0-9]/g, "_")}_Presentation.txt`;
+  a.download = `Expert_Company_${property.title.replace(/[^a-zA-Z0-9]/g, "_")}_Presentation.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

@@ -23,9 +23,9 @@ import { HeroBuilding } from "@/components/layout/HeroBuilding";
 export default function SettingsPage() {
   // Profile state
   const [legalName, setLegalName] = useState("John Doe");
-  const [email, setEmail] = useState("john.doe@propsync.in");
+  const [email, setEmail] = useState("john.doe@expertcompany.in");
   const [phone, setPhone] = useState("+91 98765 43210");
-  const [organization, setOrganization] = useState("PropSync Realty Ventures LLP");
+  const [organization, setOrganization] = useState("Expert Company Realty Ventures LLP");
 
   // DPDP Policies
   const [aadhaarMasking, setAadhaarMasking] = useState(true);

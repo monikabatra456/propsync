@@ -16,7 +16,7 @@ def generate_signed_upload_url(
     """
     media_id = str(uuid.uuid4())
     file_path = f"properties/{payload.property_id or 'draft'}/{media_id}_{payload.filename}"
-    upload_url = f"https://propsync-storage.s3.ap-south-1.amazonaws.com/{file_path}?signed_token=mock_upload_jwt"
+    upload_url = f"https://expertcompany-storage.s3.ap-south-1.amazonaws.com/{file_path}?signed_token=mock_upload_jwt"
 
     return MediaSignedUrlResponse(
         upload_url=upload_url,
@@ -35,7 +35,7 @@ def confirm_media_upload(
         "status": "confirmed",
         "media_id": media_id,
         "property_id": property_id,
-        "public_url": f"https://cdn.propsync.com/properties/{property_id}/{media_id}.jpg",
+        "public_url": f"https://cdn.expertcompany.com/properties/{property_id}/{media_id}.jpg",
     }
 
 

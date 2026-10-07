@@ -17,7 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { PropSyncLogo } from "@/components/ui/PropSyncLogo";
+import { ExpertCompanyLogo } from "@/components/ui/ExpertCompanyLogo";
 import { UserRole, ROLE_PERMISSIONS } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
@@ -147,10 +147,10 @@ export function Sidebar({
           <div className="pt-7 pb-6 px-5 flex items-center justify-between">
             <Link href="/dashboard" className="flex items-center gap-3 group">
               <div className="w-[30px] h-[30px] flex-shrink-0 text-white flex items-center justify-center">
-                <PropSyncLogo size={30} variant="white" />
+                <ExpertCompanyLogo size={30} variant="white" />
               </div>
               <span className="text-[24px] font-semibold tracking-tight text-white font-sans md:hidden lg:inline leading-none">
-                PropSync
+                Expert Company
               </span>
             </Link>
 
@@ -214,7 +214,7 @@ export function Sidebar({
         <div className="relative z-10 p-4 border-t border-white/12 bg-[#071D3F]/40 backdrop-blur-xs">
           <div className="flex items-start gap-2.5">
             <div className="mt-0.5 text-white flex-shrink-0">
-              <PropSyncLogo size={22} variant="white" />
+              <ExpertCompanyLogo size={22} variant="white" />
             </div>
             <div className="md:hidden lg:block min-w-0">
               <p className="text-[13px] font-semibold text-white leading-tight truncate">

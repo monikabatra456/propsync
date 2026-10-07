@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
-import { PropSyncLogo } from "@/components/ui/PropSyncLogo";
+import { ExpertCompanyLogo } from "@/components/ui/ExpertCompanyLogo";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-[#E9EFF8] flex flex-col items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md bg-white rounded-card border border-line p-8 shadow-login space-y-6">
         <div className="flex justify-center">
-          <PropSyncLogo size={40} variant="navy" />
+          <ExpertCompanyLogo size={40} variant="navy" />
         </div>
 
         <div className="text-center space-y-1">
@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@propsync.com"
+                  placeholder="name@expertcompany.com"
                   className="w-full h-[42px] pl-9 pr-3 rounded-[8px] border border-line focus:outline-none focus:border-brand-600"
                 />
               </div>

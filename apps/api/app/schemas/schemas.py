@@ -63,7 +63,7 @@ class PropertyCreate(BaseModel):
     building_name: Optional[str] = None
     building_age: Optional[str] = None
     total_floors: Optional[int] = 1
-    listed_by: Optional[str] = "PropSync Broker"
+    listed_by: Optional[str] = "Expert Company Broker"
     description: Optional[str] = None
     images: List[str] = Field(default_factory=list)
     video_url: Optional[str] = None

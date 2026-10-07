@@ -1,6 +1,6 @@
 {
-  "name": "PropSync — Commercial Real Estate Management",
-  "short_name": "PropSync",
+  "name": "Expert Company — Commercial Real Estate Management",
+  "short_name": "Expert Company",
   "description": "Responsive real estate inventory, GPS field data collection, and property management PWA.",
   "start_url": "/properties",
   "display": "standalone",

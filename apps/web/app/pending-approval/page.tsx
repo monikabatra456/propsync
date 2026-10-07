@@ -3,14 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { Clock, ShieldAlert, ArrowLeft, Mail, MessageSquare } from "lucide-react";
-import { PropSyncLogo } from "@/components/ui/PropSyncLogo";
+import { ExpertCompanyLogo } from "@/components/ui/ExpertCompanyLogo";
 
 export default function PendingApprovalPage() {
   return (
     <div className="min-h-screen bg-[#E9EFF8] flex flex-col items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md bg-white rounded-card border border-line p-8 shadow-login text-center space-y-6">
         <div className="flex justify-center">
-          <PropSyncLogo size={44} variant="navy" />
+          <ExpertCompanyLogo size={44} variant="navy" />
         </div>
 
         <div className="w-16 h-16 rounded-full bg-[#FFF0D9] text-[#E8870E] mx-auto flex items-center justify-center">
@@ -46,7 +46,7 @@ export default function PendingApprovalPage() {
           </Link>
 
           <a
-            href="mailto:admin@propsync.com?subject=Approval%20Inquiry%20for%20PropSync%20Account"
+            href="mailto:admin@expertcompany.com?subject=Approval%20Inquiry%20for%20Expert%20Company%20Account"
             className="w-full h-[40px] text-brand-link hover:underline font-medium text-[13px] inline-flex items-center justify-center gap-1.5"
           >
             <Mail className="w-4 h-4" />

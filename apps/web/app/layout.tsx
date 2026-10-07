@@ -17,11 +17,11 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "PropSync — Smarter Real Estate Management",
+  title: "Expert Company — Smarter Real Estate Management",
   description: "Connect. Track. Grow. Modern platform for property inventory, commercial leasing, and field operations.",
   icons: {
-    icon: "/brand/propsync-glyph.svg",
-    shortcut: "/brand/propsync-glyph.svg",
+    icon: "/brand/expertcompany-glyph.svg",
+    shortcut: "/brand/expertcompany-glyph.svg",
   },
 };
 

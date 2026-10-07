@@ -1,4 +1,4 @@
-"""PropSync database models — every table includes:
+"""Expert Company database models — every table includes:
 id (uuid), created_at, updated_at, created_by, is_deleted.
 """
 import uuid

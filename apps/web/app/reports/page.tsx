@@ -71,7 +71,7 @@ export default function ReportsPage() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `PropSync_Commercial_Intelligence_${period.replace(/[\s–()]+/g, "_")}.csv`);
+    link.setAttribute("download", `Expert_Company_Commercial_Intelligence_${period.replace(/[\s–()]+/g, "_")}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -5,9 +5,9 @@ import os
 from app.routers import auth, properties, admin, media, leads
 
 app = FastAPI(
-    title="PropSync API",
+    title="Expert Company API",
     version="1.0.0",
-    description="Backend API for PropSync Commercial Real Estate Management & Field Survey System",
+    description="Backend API for Expert Company Commercial Real Estate Management & Field Survey System",
     docs_url="/docs",
     openapi_url="/api/v1/openapi.json",
 )
@@ -41,7 +41,7 @@ app.include_router(leads.router, prefix="/api/v1")
 def health_check():
     return {
         "status": "ok",
-        "app": "PropSync API",
+        "app": "Expert Company API",
         "version": "1.0.0",
         "services": {
             "database": "connected",

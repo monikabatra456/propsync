@@ -1,4 +1,4 @@
-"""PropSync models package"""
+"""Expert Company models package"""
 from app.models.models import (
     User,
     Property,

@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql://postgres:postgres@localhost:5432/propsync"
+    database_url: str = "postgresql://postgres:postgres@localhost:5432/expertcompany"
     supabase_jwt_secret: str = ""
     storage_bucket: str = "property-media"
     whatsapp_token: str = ""

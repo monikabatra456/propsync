@@ -1,4 +1,4 @@
-# PropSync — Tech Stack & Build Brief (read this first)
+﻿# Expert Company — Tech Stack & Build Brief (read this first)
 
 Product: responsive **web app / PWA** (not native). Field staff use phone browser (GPS + camera). UI must match `docs/01-DESIGN-SYSTEM.md` and mockups exactly. Routes in `02-SITEMAP.md`, flows in `03-USERFLOWS.md`.
 

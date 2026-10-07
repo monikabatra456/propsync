@@ -60,3 +60,4 @@ ENV/
 .vscode/
 *.swp
 *.swo
+*.tsbuildinfo

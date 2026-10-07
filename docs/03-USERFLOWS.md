@@ -1,4 +1,4 @@
-# PropSync — User Flows
+﻿# Expert Company — User Flows
 
 All diagrams are Mermaid (render in GitHub/Cursor preview). Screens refer to mockups: **M1** Login, **M2** Properties list, **M3** Add Property S1, **M4** Property detail, **M5** Admin.
 

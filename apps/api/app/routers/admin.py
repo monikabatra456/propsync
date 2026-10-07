@@ -8,15 +8,15 @@ router = APIRouter(prefix="/admin", tags=["Admin"])
 
 # Mock Admin state
 MOCK_USERS = [
-    {"id": "u-1", "name": "John Doe", "email": "john@propsync.com", "role": "admin", "status": "active", "department": "HQ"},
-    {"id": "u-2", "name": "Rahul Sharma", "email": "rahul.s@propsync.com", "role": "field", "status": "active", "department": "Field"},
-    {"id": "u-3", "name": "Priya Nair", "email": "priya.n@propsync.com", "role": "sales", "status": "active", "department": "Leasing"},
+    {"id": "u-1", "name": "John Doe", "email": "john@expertcompany.com", "role": "admin", "status": "active", "department": "HQ"},
+    {"id": "u-2", "name": "Rahul Sharma", "email": "rahul.s@expertcompany.com", "role": "field", "status": "active", "department": "Field"},
+    {"id": "u-3", "name": "Priya Nair", "email": "priya.n@expertcompany.com", "role": "sales", "status": "active", "department": "Leasing"},
 ]
 
 MOCK_APPROVALS = [
-    {"id": "app-1", "name": "Vikas Kapoor", "email": "vikas.k@propsync.com", "role_requested": "field", "department": "Field Ops"},
-    {"id": "app-2", "name": "Tanvi Saxena", "email": "tanvi.s@propsync.com", "role_requested": "sales", "department": "Commercial"},
-    {"id": "app-3", "name": "Ramanathan Iyer", "email": "raman.i@propsync.com", "role_requested": "space_sales", "department": "Retail"},
+    {"id": "app-1", "name": "Vikas Kapoor", "email": "vikas.k@expertcompany.com", "role_requested": "field", "department": "Field Ops"},
+    {"id": "app-2", "name": "Tanvi Saxena", "email": "tanvi.s@expertcompany.com", "role_requested": "sales", "department": "Commercial"},
+    {"id": "app-3", "name": "Ramanathan Iyer", "email": "raman.i@expertcompany.com", "role_requested": "space_sales", "department": "Retail"},
 ]
 
 MOCK_AUDIT = [
@@ -106,5 +106,5 @@ def export_audit_csv(user: AuthUser = Depends(require_role(["admin"]))):
     return Response(
         content=content,
         media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=PropSync_Audit_Trail.csv"},
+        headers={"Content-Disposition": "attachment; filename=Expert_Company_Audit_Trail.csv"},
     )

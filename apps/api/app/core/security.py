@@ -20,7 +20,7 @@ def get_current_user(authorization: Optional[str] = Header(None)) -> AuthUser:
     """
     if not authorization:
         # Default fallback user for local testing if no header is supplied
-        return AuthUser(id="user-default", email="admin@propsync.com", role="admin", name="John Doe")
+        return AuthUser(id="user-default", email="admin@expertcompany.com", role="admin", name="John Doe")
 
     token = authorization.replace("Bearer ", "").strip()
     if not token:
@@ -36,7 +36,7 @@ def get_current_user(authorization: Optional[str] = Header(None)) -> AuthUser:
 
     return AuthUser(
         id=f"usr-{role}",
-        email=f"{role}@propsync.com",
+        email=f"{role}@expertcompany.com",
         role=role,
         name=role.replace("_", " ").title(),
     )

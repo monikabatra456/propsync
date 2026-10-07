@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, UserPlus, Shield, UserCheck, Briefcase, Building, Mail, Lock, User } from "lucide-react";
-import { PropSyncLogo } from "@/components/ui/PropSyncLogo";
+import { ExpertCompanyLogo } from "@/components/ui/ExpertCompanyLogo";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -24,8 +24,8 @@ export default function SignupPage() {
       <div className="w-full max-w-lg bg-white rounded-card border border-line p-8 shadow-login space-y-6">
         <div className="flex items-center justify-between pb-3 border-b border-line">
           <div className="flex items-center gap-2.5">
-            <PropSyncLogo size={32} variant="navy" />
-            <span className="text-[20px] font-bold text-navy-800 tracking-tight">PropSync</span>
+            <ExpertCompanyLogo size={32} variant="navy" />
+            <span className="text-[20px] font-bold text-navy-800 tracking-tight">Expert Company</span>
           </div>
           <Link
             href="/login"
@@ -36,7 +36,7 @@ export default function SignupPage() {
         </div>
 
         <div>
-          <h1 className="text-[24px] font-bold text-ink-900 tracking-tight">Join PropSync Team</h1>
+          <h1 className="text-[24px] font-bold text-ink-900 tracking-tight">Join Expert Company Team</h1>
           <p className="text-[13px] text-ink-500 mt-1">
             Submit your employee registration for administrative clearance.
           </p>
@@ -67,7 +67,7 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@propsync.com"
+                placeholder="name@expertcompany.com"
                 className="w-full h-[42px] pl-9 pr-3 rounded-[8px] border border-line focus:outline-none focus:border-brand-600"
               />
             </div>

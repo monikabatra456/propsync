@@ -5,13 +5,13 @@ from app.main import app
 client = TestClient(app)
 
 
-class TestPropSyncAPI(unittest.TestCase):
+class TestExpertCompanyAPI(unittest.TestCase):
     def test_health_check(self):
         response = client.get("/health")
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(data["status"], "ok")
-        self.assertEqual(data["app"], "PropSync API")
+        self.assertEqual(data["app"], "Expert Company API")
 
     def test_auth_me(self):
         response = client.get("/api/v1/me", headers={"Authorization": "Bearer admin"})

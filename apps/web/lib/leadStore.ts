@@ -149,7 +149,7 @@ export const INITIAL_LEADS: Lead[] = [
   },
 ];
 
-const LEADS_STORAGE_KEY = "propsync_leads_v1";
+const LEADS_STORAGE_KEY = "expertcompany_leads_v1";
 
 export function getStoredLeads(): Lead[] {
   if (typeof window === "undefined") {

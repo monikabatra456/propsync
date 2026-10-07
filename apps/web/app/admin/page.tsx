@@ -67,21 +67,21 @@ interface AuditLogItem {
 }
 
 const INITIAL_USERS: UserItem[] = [
-  { id: "u-1", name: "John Doe", email: "john@propsync.com", role: "admin", status: "active", lastLogin: "Just now", initials: "JD", initialsColor: "bg-[#0B2B57] text-white" },
-  { id: "u-2", name: "Rahul Sharma", email: "rahul.s@propsync.com", role: "field", status: "active", lastLogin: "Today, 11:20 AM", initials: "RS", initialsColor: "bg-[#EAF3FF] text-[#1769EB]" },
-  { id: "u-3", name: "Priya Nair", email: "priya.n@propsync.com", role: "sales", status: "active", lastLogin: "Yesterday, 04:15 PM", initials: "PN", initialsColor: "bg-[#E3F7EE] text-[#0F9D63]" },
-  { id: "u-4", name: "Ankit Verma", email: "ankit.v@propsync.com", role: "space_sales", status: "active", lastLogin: "Apr 25, 2025", initials: "AV", initialsColor: "bg-[#F0EAFD] text-[#7A4FE0]" },
-  { id: "u-5", name: "Deepak Patel", email: "deepak.p@propsync.com", role: "field", status: "active", lastLogin: "Apr 24, 2025", initials: "DP", initialsColor: "bg-[#EAF3FF] text-[#1769EB]" },
+  { id: "u-1", name: "John Doe", email: "john@expertcompany.com", role: "admin", status: "active", lastLogin: "Just now", initials: "JD", initialsColor: "bg-[#0B2B57] text-white" },
+  { id: "u-2", name: "Rahul Sharma", email: "rahul.s@expertcompany.com", role: "field", status: "active", lastLogin: "Today, 11:20 AM", initials: "RS", initialsColor: "bg-[#EAF3FF] text-[#1769EB]" },
+  { id: "u-3", name: "Priya Nair", email: "priya.n@expertcompany.com", role: "sales", status: "active", lastLogin: "Yesterday, 04:15 PM", initials: "PN", initialsColor: "bg-[#E3F7EE] text-[#0F9D63]" },
+  { id: "u-4", name: "Ankit Verma", email: "ankit.v@expertcompany.com", role: "space_sales", status: "active", lastLogin: "Apr 25, 2025", initials: "AV", initialsColor: "bg-[#F0EAFD] text-[#7A4FE0]" },
+  { id: "u-5", name: "Deepak Patel", email: "deepak.p@expertcompany.com", role: "field", status: "active", lastLogin: "Apr 24, 2025", initials: "DP", initialsColor: "bg-[#EAF3FF] text-[#1769EB]" },
   { id: "u-6", name: "Suresh Gupta", email: "suresh.owner@gmail.com", role: "owner", status: "active", lastLogin: "Apr 23, 2025", initials: "SG", initialsColor: "bg-[#FFF3D6] text-[#B7791F]" },
-  { id: "u-7", name: "Meera Sen", email: "meera.s@propsync.com", role: "sales", status: "disabled", lastLogin: "Apr 18, 2025", initials: "MS", initialsColor: "bg-[#EEF2F7] text-[#6F87A5]" },
-  { id: "u-8", name: "Kunal Ghosh", email: "kunal.g@propsync.com", role: "field", status: "active", lastLogin: "Apr 22, 2025", initials: "KG", initialsColor: "bg-[#EAF3FF] text-[#1769EB]" },
+  { id: "u-7", name: "Meera Sen", email: "meera.s@expertcompany.com", role: "sales", status: "disabled", lastLogin: "Apr 18, 2025", initials: "MS", initialsColor: "bg-[#EEF2F7] text-[#6F87A5]" },
+  { id: "u-8", name: "Kunal Ghosh", email: "kunal.g@expertcompany.com", role: "field", status: "active", lastLogin: "Apr 22, 2025", initials: "KG", initialsColor: "bg-[#EAF3FF] text-[#1769EB]" },
 ];
 
 const INITIAL_APPROVALS: ApprovalItem[] = [
-  { id: "app-1", name: "Vikas Kapoor", email: "vikas.k@propsync.com", roleRequested: "field", department: "Field Operations (Noida)", submittedOn: "Today, 09:30 AM", initials: "VK" },
-  { id: "app-2", name: "Tanvi Saxena", email: "tanvi.s@propsync.com", roleRequested: "sales", department: "Commercial Leasing", submittedOn: "Yesterday, 06:10 PM", initials: "TS" },
-  { id: "app-3", name: "Ramanathan Iyer", email: "raman.i@propsync.com", roleRequested: "space_sales", department: "Retail Spaces", submittedOn: "Apr 24, 2025", initials: "RI" },
-  { id: "app-4", name: "Simran Kaur", email: "simran.k@propsync.com", roleRequested: "field", department: "Site Survey (Gurgaon)", submittedOn: "Apr 23, 2025", initials: "SK" },
+  { id: "app-1", name: "Vikas Kapoor", email: "vikas.k@expertcompany.com", roleRequested: "field", department: "Field Operations (Noida)", submittedOn: "Today, 09:30 AM", initials: "VK" },
+  { id: "app-2", name: "Tanvi Saxena", email: "tanvi.s@expertcompany.com", roleRequested: "sales", department: "Commercial Leasing", submittedOn: "Yesterday, 06:10 PM", initials: "TS" },
+  { id: "app-3", name: "Ramanathan Iyer", email: "raman.i@expertcompany.com", roleRequested: "space_sales", department: "Retail Spaces", submittedOn: "Apr 24, 2025", initials: "RI" },
+  { id: "app-4", name: "Simran Kaur", email: "simran.k@expertcompany.com", roleRequested: "field", department: "Site Survey (Gurgaon)", submittedOn: "Apr 23, 2025", initials: "SK" },
 ];
 
 const INITIAL_AUDIT_LOGS: AuditLogItem[] = [
@@ -201,7 +201,7 @@ export default function AdminPage() {
         .join("\n");
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", `PropSync_Audit_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute("download", `Expert_Company_Audit_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -659,7 +659,7 @@ export default function AdminPage() {
                   required
                   value={newUserEmail}
                   onChange={(e) => setNewUserEmail(e.target.value)}
-                  placeholder="ramesh@propsync.com"
+                  placeholder="ramesh@expertcompany.com"
                   className="w-full h-[42px] px-3.5 border border-[#DCE8F5] rounded-[10px] text-[13px] text-[#102F57] focus:outline-none focus:border-[#1769EB] focus:ring-2 focus:ring-[#1769EB]/20 transition-all placeholder:text-[#6F87A5]/60"
                 />
               </div>
